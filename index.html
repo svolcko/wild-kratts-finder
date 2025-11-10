@@ -1,0 +1,291 @@
+import React, { useState, useMemo } from 'react';
+import { Search } from 'lucide-react';
+
+const WildKrattsEpisodeFinder = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const episodes = [
+    { season: 1, episode: 1, title: "Mom of a Croc", description: "Chris and Martin are determined to prove to Aviva that there's more to crocodiles than their reputation as scary brutes." },
+    { season: 1, episode: 2, title: "Whale of a Squid", description: "Chris and Martin are taking Aviva's sub prototype out for a test drive when it gets sucked into a battle between a Sperm whale and Giant squid, spiraling down into the depths." },
+    { season: 1, episode: 3, title: "Aardvark Town", description: "When a young aardvark accidentally becomes a stowaway in Chris's backpack, the Wild Kratts team sets off on a \"door to door\" search to return him to his home burrow." },
+    { season: 1, episode: 4, title: "Flight of the Draco", description: "While on a mission to discover the secret of the Draco lizard's gliding abilities, Martin and Chris uncover an evil plot by fashion designer, Donita Donata." },
+    { season: 1, episode: 5, title: "Mystery of the Squirmy Wormy", description: "Aviva miniaturizes Chris and Martin for an underground mission with earthworms, in search of the answer to the mystery \"Why do worms come above ground when it rains?\"" },
+    { season: 1, episode: 6, title: "Platypus Cafe", description: "While kayaking in Australia, Martin and Chris encounter one of the world's most unusual creatures, a platypus mother with her eggs." },
+    { season: 1, episode: 7, title: "Build it Beaver", description: "The Wild Kratts team must lend a hand to help a beaver rebuild its damaged lodge and restore the ecosystem for all the creatures who live there." },
+    { season: 1, episode: 8, title: "Voyage of the Butterflier XT", description: "Using Aviva's newly invented Butterflier XT, the miniaturized Kratt Brothers embark on the most incredible insect voyage in the world - the Monarch butterfly's 2,000 mile migration." },
+    { season: 1, episode: 9, title: "Honey Seekers", description: "While on an adventure to discover the toughest animal in Africa, Martin and Chris uncover the amazing relationship between the Honey guide bird and Honey badger." },
+    { season: 1, episode: 10, title: "Bass Class", description: "Martin and Chris are in the middle of a friendly competition to find Small-mouth and Large-mouth Bass when they meet Wild Kratts Kid, Gavin, who is fishing." },
+    
+    { season: 2, episode: 1, title: "Fireflies", description: "It's time for the annual Wild Kratt Firefly picnic." },
+    { season: 2, episode: 2, title: "Mystery of the Weird Looking Walrus", description: "Chris and Martin are on a mission to discover why walrus look so weird, but discover that Zach Varmitech has kidnapped a herd to mine precious pearls for Donita Donata's fashion line." },
+    { season: 2, episode: 3, title: "Tazzy Chris", description: "When Martin and Chris assist the Tasmanian Wildlife Service in tagging endangered Tasmanian Devils, they discover that Zach Varmitech has been kidnapping them to create a ferocious new Zachbot." },
+    { season: 2, episode: 4, title: "Octopus Wildkratticus", description: "When Martin accidentally knocks Aviva's creature power suits into a deep Arctic trench, the Martin and Chris dive down in search of them in Aviva's newly invented Octopod submarine." },
+    { season: 2, episode: 5, title: "Walk on the Wet Side", description: "When Martin and Chris search for and find an amazing water-walking Basilisk lizard in Costa Rica, they try to replicate its actions in order to learn how this rare lizard is able to walk on water." },
+    { season: 2, episode: 6, title: "Elephant in the Room", description: "When Martin and Chris find a lone baby elephant, they bring him back to the Tortuga HQ for safety until they find his Mom." },
+    { season: 2, episode: 7, title: "Let the Rhinos Roll!", description: "The Wild Kratt team is on a mission to discover why Rhinos are mysteriously disappearing from the African Savannah." },
+    { season: 2, episode: 8, title: "Kickin' it with the Roos", description: "When Martin and Chris meet up with a mob of Red Kangaroos, they get their car keys stolen by a little joey and have to figure out how to get them back from one very smart joey." },
+    { season: 2, episode: 9, title: "The Blue and the Gray", description: "When a Creature Power Suit malfunction turns Martin into an Oak tree, the Wild Kratts team has to use their knowledge of Gray squirrels and Blue jays to save the day." },
+    { season: 2, episode: 10, title: "Falcon City", description: "The Kratt brothers are itching to fly with the world's fastest animal, the Peregrine falcon, which can hit top speeds of 240 mph." },
+    
+    { season: 3, episode: 1, title: "Polar Bears Don't Dance", description: "While in the Arctic, Martin and Chris are on a mission to discover how animals move around in different environments. Their new knowledge comes in handy when they discover that Zach Varmitech has kidnapped a Walrus calf and a Polar bear cub." },
+    { season: 3, episode: 2, title: "Koala Balloon", description: "Martin and Chris must protect a koala bear stranded in the Australian Outback, and help him get back to his Eucalyptus forest habitat." },
+    { season: 3, episode: 3, title: "Cheetah Racer", description: "Chris and Martin announce that no creature or vehicle can travel as fast over the rough and tumble African savannah as the cheetah. Aviva takes the challenge and declares she will build a ground racer that can race faster than a cheetah." },
+    { season: 3, episode: 4, title: "Kerhonk", description: "When Chris and Martin's Creature Power suits get jammed in Proboscis monkey mode, they find themselves joining the troop to help them stay out of reach of the top predators of the Indonesian rainforest." },
+    { season: 3, episode: 5, title: "Mimic", description: "While exploring why some animals mimic the looks of others, Martin and Chris come across a cheetah cub and its mom. But before they know it, evil fashion designer, Donita Donata, 'catnips' the mom right in front of their eyes." },
+    { season: 3, episode: 6, title: "Caracal-minton", description: "Chris and Martin must recover Aviva's precious family heirloom - a badminton birdie - from the elusive, leaping Caracal cat." },
+    { season: 3, episode: 7, title: "Zig-zagged", description: "Martin and Chris find themselves in a Zebra stampede, and when the dust clears, a lone baby Zebra is left behind. They must now return him to his Mom, with predators abounding along the way." },
+    { season: 3, episode: 8, title: "A Huge Orange Problem", description: "While Chris and Martin are off searching for the endangered orangutan in the deep forests of Borneo, back at the Tortuga HQ, Aviva, Koki, and Jimmy come down with an itchy rash." },
+    { season: 3, episode: 9, title: "The Food Chain Game", description: "Aviva wants to build a food web for the African savannah, so she devises a game and Chris and Martin take the challenge!" },
+    { season: 3, episode: 10, title: "Masked Bandits", description: "The Wild Kratts team starts to notice strange things happening in the Tortuga HQ. Jimmy is sure there is a ghost living with them, but they soon discover its a raccoon family causing all the trouble." },
+    
+    { season: 4, episode: 1, title: "Seasquatch", description: "While exploring the strange landscape of the ocean depths, the Kratt Brothers' sub loses power and they are trapped on the ocean floor." },
+    { season: 4, episode: 2, title: "Flight of the Pollinators", description: "When a miniaturized Chris gets covered with pollen and ends up sticking to a bee, he gets carried off into the world of the pollinators." },
+    { season: 4, episode: 3, title: "The Gecko Effect", description: "There's a mystery to be solved by the Wild Kratts team, as they try to uncover how a Gecko lizard climbs up smooth surfaces so easily." },
+    { season: 4, episode: 4, title: "Little Howler", description: "Chris and Martin are unpacking their bags from an adventure and are surprised to pull out a Wolf pup." },
+    { season: 4, episode: 5, title: "Quillber's Birthday Present", description: "It's Aviva's birthday, and Chris and Martin set out to collect porcupine quills for a beautiful necklace with surprising results." },
+    { season: 4, episode: 6, title: "A Bat in the Brownies", description: "When a bat gets trapped in the Tortuga HQ, the Wild Kratts team has to overcome its various negative feelings about the winged mammals in order to help him back out into the wild." },
+    { season: 4, episode: 7, title: "Stuck on Sharks", description: "Martin and Chris are on a mission to see something that no one has ever seen before - the birth of a baby great white shark." },
+    { season: 4, episode: 8, title: "Birds of a Feather", description: "Martin, Chris and crew are in New Guinea to discover why male Birds of Paradise have the best dance moves in the forest." },
+    { season: 4, episode: 9, title: "Googly Eye: The Night Guru", description: "When Martin and Chris glimpse a mysterious nocturnal creature living in the Indonesian forest, they secretly \"borrow\" Aviva's half finished night vision goggles to go in search of it. Tarsier." },
+    { season: 4, episode: 10, title: "Raptor Round Up", description: "Martin and Chris are on a mission to check out hawks, eagles, owls, falcons and vultures. But evil chef Gourmand has his own plan for the raptors." },
+    
+    { season: 5, episode: 1, title: "Bad Hair Day", description: "Chris and Martin try to help a lion named \"He who breathes fire\" get past obstacles and back to his pride, who are under siege from two intruder lions." },
+    { season: 5, episode: 2, title: "Race for the Hippo Disc", description: "When Chris and Martin accidentally lose a Power Disc on the African savannah, the Wild Kratts goes into crisis mode to find the disc before it gets into the hands of Zach Varmitech." },
+    { season: 5, episode: 3, title: "Creature Power Challenge", description: "After getting caught in the middle of a tussle between a grumpy rhino and an outraged elephant, Martin and Chris decide to have a contest to decide what's stronger - elephant or rhino powers." },
+    { season: 5, episode: 4, title: "Termites vs. Tongues", description: "When Aviva and Koki accidentally miniaturize themselves and get carried away by termites, Martin and Chris must split up to search for them." },
+    { season: 5, episode: 5, title: "Happy Turkey Day", description: "The Wild Kratts are on a mission to defend the honor of the wild turkey and to stop Gourmand, who is hunting for the largest, fattest turkey in the forest." },
+    { season: 5, episode: 6, title: "Neck and Neck", description: "As Chris and Martin search for the answer to why giraffes have long necks, a mischievous giraffe begins secretly taking Creature Power Suit parts and supplies from the Tortuga." },
+    { season: 5, episode: 7, title: "Bugs or Monkeys?", description: "A miniaturized Martin wants to check out insects in the rainforest, but Chris wants to investigate the world of the Spider monkey." },
+    { season: 5, episode: 8, title: "Secrets of the Spider's Web", description: "When the creature adventuring Kratt Brothers take a nasty tumble, the Wild Kratts sets off on a mission to find and recreate one of the greatest of all biotech engineering secrets. Spider silk." },
+    { season: 5, episode: 9, title: "Shadow: The Black Jaguar", description: "Martin and Chris are trying to decide on their next wild cat adventure when they learn that Zach Varmitech has decided to \"catnap\" a Black Jaguar to use as a symbol for his new spybots." },
+    { season: 5, episode: 10, title: "To Touch a Hummingbird", description: "Martin and Chris realize that the Hummingbird might be the ultimate flier in the Creature world and ask Aviva to create a new power disc with its powers." },
+    
+    { season: 6, episode: 1, title: "Rainforest Stew", description: "When Chris and Martin go in search of an obscure rainforest creature to add to their Life Lists, the Wild Kratts becomes embroiled in the complex relationships of a tropical rainforest." },
+    { season: 6, episode: 2, title: "Seahorse Rodeo", description: "While exploring the world of the seahorse, Martin and Chris uncover a plot by Donita Donata to capture these amazing creatures and turn them into living jewelry." },
+    { season: 6, episode: 3, title: "Speaking Dolphinese", description: "The Wild Kratts are on a mission to decode the secret language of one of the smartest creatures on Earth - Dolphins!" },
+    { season: 6, episode: 4, title: "Aqua Frog", description: "While the Wild Kratts explore the life cycle of the Bull Frog, they uncover a plot by Zach Varmitech to destroy the frogs' habitat." },
+    { season: 6, episode: 5, title: "Tortuga Tune Up", description: "Aviva loves the Tortuga design, but feels there's something missing. Martin and Chris realize it can't really swim, so they decide to get some bio inspiration for this feature by exploring the world of the sea turtles." },
+    { season: 6, episode: 6, title: "Blowfish Blowout", description: "When the miniaturized Kratt Brothers get swept up and lost in a current of plankton, they become part of a crowd of fish larva all headed to the most populated and diverse habitat on Earth - the coral reef." },
+    { season: 6, episode: 7, title: "Road Runner", description: "Koki wants to leave the Sonoran Desert to resupply the Tortuga, but Chris and Martin don't want to go until they track down a mysterious lizard." },
+    { season: 6, episode: 8, title: "Rocket Jaw: Rescuer of the Reef", description: "While checking out how coral reefs are formed, the Wild Kratts discover that Zach and Donita have sent robotic Parrotfish to collect coral to make jewelry." },
+    
+    { season: 7, episode: 1, title: "Snow Runners", description: "Martin and Chris must use the amazing winter adaptations and strategies of the Snowshoe hare and lynx to locate the hares before its too late." },
+    { season: 7, episode: 2, title: "Attack of the Tree Eating Aliens", description: "The Wild Kratts get an urgent call from a group of North American Wild Kratts kids telling them almost all of the trees in the forest are dying." },
+    { season: 7, episode: 3, title: "Rattlesnake Crystal", description: "After the Tortuga crash lands in the Sonoran Desert, Koki discovers that the Tellurium crystals have run out of power and they need a new supply." },
+    { season: 7, episode: 4, title: "Skunked!", description: "The Wild Kratts must find a way to try and reclaim their headquarters." },
+    { season: 7, episode: 5, title: "Gila Monster Under My House", description: "The Wild Kratts receive a call from Xavier, a Wild Kratt kid who lives in the Sonoran Desert." },
+    { season: 7, episode: 6, title: "Desert Elves", description: "Aviva and the Kratt Brothers must rely on the eyes and ears of the Elf owl to help find their friends in the harsh habitat." },
+    { season: 7, episode: 7, title: "Ground Hog Wake Up Call", description: "Aviva discovers a cute Ground Hog in a meadow and decides to create - and test on herself - a Creature Power Suit." },
+    { season: 7, episode: 8, title: "Journey to the Subnivean Zone", description: "The Kratt Brothers discover a strange and unlikely colony of snow creatures living in the mysterious Subnivean Zone." },
+    
+    { season: 8, episode: 1, title: "Hermit Crab Shell Exchange", description: "Martin and Chris discover a hermit crab on the beach." },
+    { season: 8, episode: 2, title: "When Fish Fly", description: "Martin and Chris challenge Koki and Aviva to a contest about who has the most challenging job." },
+    { season: 8, episode: 3, title: "Slider, the Otter", description: "The Wild Kratts discover a lost otter cub." },
+    { season: 8, episode: 4, title: "Mosquito Dragon", description: "Koki and Jimmy get walloped by mosquitoes in the Cypress Swamp." },
+    { season: 8, episode: 5, title: "Under Frozen Pond", description: "The Wild Kratts and Wild Kratts kids go on an underwater adventure." },
+    { season: 8, episode: 6, title: "Search for the Florida Panther", description: "The Wild Kratts team gets an alert that an injured endangered Florida Panther was just spotted." },
+    { season: 8, episode: 7, title: "Osprey", description: "Jimmy accidentally drops the keys to the Tortuga into the ocean." },
+    { season: 8, episode: 8, title: "Opossum in My Pocket", description: "The brothers discover a marsupial opossum." },
+    { season: 8, episode: 9, title: "Bandito: The Black Footed Ferret", description: "Martin encounters a lost colony of black footed ferrets." },
+    { season: 8, episode: 10, title: "Where The Bison Roam", description: "The Wild Kratts Team discover that prairies and the amazing bison herds of yore are much harder to find these days." },
+    
+    { season: 9, episode: 1, title: "Crocogator Contest", description: "A pop Creative Quiz challenge question turns into a full-blown Crocogator contest." },
+    { season: 9, episode: 2, title: "The Amazing Creature Race", description: "The Wild Kratts crew decide to have a creature power race." },
+    { season: 9, episode: 3, title: "Prairie Who?", description: "A twister surprises the Tortuga in flight - and all the gang abandons ship and gets separated out in the prairie." },
+    { season: 9, episode: 4, title: "Mystery on the Prairie", description: "Martin and Chris set out to solve a new creature mystery." },
+    { season: 9, episode: 5, title: "Chameleons on Target", description: "Aviva is working on a special ring chip that will super power her \"inventuring\", but it's stolen by a mysterious lemur." },
+    { season: 9, episode: 6, title: "Lemur Stink Fight", description: "While in Madagascar, the Wild Kratts hear signs of a dispute between two troops of Ring-tailed lemurs." },
+    { season: 9, episode: 7, title: "Praying Mantis", description: "Two Wild Kratts kids wake up to find the praying mantis cocoons they've been keeping in their room have hatched!" },
+    { season: 9, episode: 8, title: "Capture the Fishmobile", description: "Aviva unveils her new Fishmobile invention and Chris and Martin challenge the gang to a brand new creature game." },
+    
+    { season: 10, episode: 1, title: "Aye Aye", description: "When the Wild Kratts team embarks on a pirate adventure in the Indian Ocean, they discover a very strange, other-worldly castaway." },
+    { season: 10, episode: 2, title: "Tenrec Treasure Hunt", description: "When Chris sets up an elaborate treasure hunt centering on a cool and rare group of insectivores - the Tenrec - from Madagascar, the rest of the crew sets off to complete the hunt." },
+    { season: 10, episode: 3, title: "Lemur Legs", description: "The Wild Kratts arrive in Madagascar for the first time - touching down in the southern region known as the spiny desert - where they discover a group of sifaka lemurs." },
+    { season: 10, episode: 4, title: "Golden Bamboo Lemur", description: "While in Madagascar, the Wild Kratts learn from Wild Kratts Kid, Patricia Ranomafana, that a Golden Bamboo lemur baby has been born." },
+    { season: 10, episode: 5, title: "Mini Madagascar", description: "With no big land predators, Chris realizes that Madagascar is one of the safest places in the world for adventuring. It's the perfect place to miniaturize and explore." },
+    { season: 10, episode: 6, title: "Fossa Palooza", description: "Chris, bummed that the gang must leave Madagascar without ever having seen amazing fossa, accidentally falls out the hatch of the Tortuga in mid-flight and lands deep in an island forest." },
+    { season: 10, episode: 7, title: "Back in Creature Time: Part 1: Day of the Dodo", description: "The Wild Kratts crew lament the extinction of different animals in recent history and how they'll never ever be able to see them! Aviva decides that it's finally time to unveil her most secret invention yet - the Time Trampoline!" },
+    { season: 10, episode: 8, title: "Back in Creature Times Part 2: Tasmanian Tiger", description: "After their encounter with the Dodo Bird, the Wild Kratts decide to try out Aviva's Time Trampoline again. This time to visit with the extinct Tasmanian Tiger." },
+    
+    { season: 11, episode: 1, title: "Stars of the Tides", description: "When Martin and Chris argue about who gets to keep a prized creature souvenir, Aviva unveils a new Creature Power Challenge that should settle things." },
+    { season: 11, episode: 2, title: "The Last Largest Lobster", description: "The Wild Kratts are having a picnic when a seagull steals one of their creature power discs and drops it into the ocean." },
+    { season: 11, episode: 3, title: "Box Turtled In!", description: "When the Wild Kratts Tortuga is accidentally miniaturized and carried off by a coyote, the mothership's shell defense is finally put to the test." },
+    { season: 11, episode: 4, title: "The Other Martens", description: "It's a relaxing day at Tortuga HQ when Chris comes in complaining about Martin. Confused, the gang soon discovers that Chris means a bird called the Purple martin and not his brother!" },
+    { season: 11, episode: 5, title: "Sea Otter Swim", description: "When the Wild Kratts take time out for a swim, Jimmy reveals that he's not that strong a swimmer. To help, Martin and Chris take him to his own personal swimming tutor - a Sea otter named Coach!" },
+    
+    { season: 12, episode: 1, title: "Liturgusa krattorum", description: "The Kratt Bros are hanging out with Shadow, when they receive news that a scientist has just named a newly discovered praying mantis species after them - Liturgusa krattorum." },
+    { season: 12, episode: 2, title: "Snowy Owl Invasion", description: "Martin and Chris are hanging out in China with their Giant panda friend Stuffo, when they receive reports of Snowy owls showing up all over North America." },
+    { season: 12, episode: 3, title: "Puffin Rescue", description: "When a rogue wave crashes into the Tortuga, the Wild Kratts get separated. Koki is trapped on a sinking Tortuga." },
+    { season: 12, episode: 4, title: "Eel-lectric!", description: "When the Tortuga crashes somewhere in the middle of the Amazon rainforest, the electrical system of the ship is destroyed." },
+    { season: 12, episode: 5, title: "The Mystery of the Two Horned Narwhal", description: "During an argument over what is better - horns or antlers - Martin and Chris decide to go on an adventure with the horned Narwhal of the Arctic." },
+    { season: 12, episode: 6, title: "Musk Ox Mania", description: "When Chris realizes that his precious Creature souvenir collection is missing, the gang must travel back to the Arctic to find it." },
+    
+    { season: 13, episode: 1, title: "Animals Who Live To Be 100 Years Old", description: "When Martin's pet fruit fly named Juice dies, Jimmy wants to find out if animals can live to be over 100 years old." },
+    { season: 13, episode: 2, title: "Spirit Bear", description: "When the gang realizes they stumbled across the rare Spirit Bear of the Northern Pacific, celebration turns to dismay when they encounter a new villain." },
+    { season: 13, episode: 3, title: "Archerfish School", description: "When the Kratt brothers meet a school of Archerfish, they are taught the secret of \"water droplet\" archery from a fish named Arrow." },
+    { season: 13, episode: 4, title: "This Orca Likes Sharks", description: "The Kratt brothers discover a message in a bottle about an old orca who only eats large sharks." },
+    { season: 13, episode: 5, title: "Baby Tooth and Kid Musky", description: "The Kratt brothers split up to investigate the lives of being a predator and a prey." },
+    { season: 13, episode: 6, title: "Cheetah Adopted", description: "Martin and Chris are creature adventuring in the African savannah when they encounter a warthog mom and her piglets." },
+    
+    { season: 14, episode: 1, title: "Mystery of the North Pole Penguins?", description: "The Wild Kratts are hanging out with Emperor penguins at the South Pole when they wonder why penguins don't live at the North Pole!" },
+    { season: 14, episode: 2, title: "Temple of the Tigers", description: "After Aviva sneaks up on and surprises the creature adventuring Kratt Brothers, they worry that they've somehow lost their signature \"creature sense.\"" },
+    { season: 14, episode: 3, title: "The Dhole Duplicator", description: "While visiting India, Martin and Chris go off on a creature adventure to explore the world of the Dhole-aka \"The Red Dog.\"" },
+    { season: 14, episode: 4, title: "The Cobra King", description: "While searching for Martin's lost Creaturepod, the Kratt brothers encounter a Spectacled cobra." },
+    { season: 14, episode: 5, title: "Fire Salamander", description: "While exploring the Black Forest in Germany, Chris and Martin are amazed to discover a black and yellow salamander crawling out of the fire!" },
+    
+    { season: 15, episode: 1, title: "Cheeks the Hamster", description: "While doing an overhaul of the Creature Power Suits over Germany, Aviva loses the all-important MicroXT Power Chips that power the suits." },
+    { season: 15, episode: 2, title: "Wild Ponies", description: "While creature adventuring on the sand dunes, Martin and Chris discover a band of Wild Ponies." },
+    { season: 15, episode: 3, title: "Elephant Brains!", description: "The Wild Kratts are on a mission to figure out the differences between African and Asian elephants." },
+    { season: 15, episode: 4, title: "Sloth Bear Suction", description: "While in India, the Wild Kratts try to figure out if a Sloth bear is a bear or a sloth." },
+    { season: 15, episode: 5, title: "City Hoppers!", description: "While Aviva and Koki help two Wild Kratt kids make a catapult, Chris and Martin explore the world of grasshoppers." },
+    
+    { season: 16, episode: 1, title: "Blue Heron", description: "The Tortuga is traveling down a dirt road when Martin spots something blue in the sky. It's a Blue heron, one of the largest birds in North America!" },
+    { season: 16, episode: 2, title: "Choose Your Swordfish", description: "Aviva challenges Martin and Chris to a fencing duel and tells them to choose their swords." },
+    { season: 16, episode: 3, title: "Komodo Dragon", description: "While Koki is monitoring her daily \"villain watch,\" she discovers that Gourmand is heading to the island of Komodo." },
+    { season: 16, episode: 4, title: "The Fourth Bald Eagle", description: "The Kratt brothers set out to experience the life of the bald eagle, Beginning as unhatched eggs in a nest, Martin and Chris grow with their eaglet sister, but then one of their siblings mysteriously disappears!" },
+    { season: 16, episode: 5, title: "The Erminator", description: "While on a mission to explore the creature powers of the chickadee - and to discover why such a little bird can make it through the toughest winters - Martin and Chris get separated." },
+    
+    { season: 17, episode: 1, title: "Hercules - The Giant Beetle", description: "While on a mission to investigate the exoskeletons of the Atlas and Hercules beetles, the Hercules beetle is accidentally enlarged." },
+    { season: 17, episode: 2, title: "Spots in the Desert", description: "Chris is in the middle of organizing his creature power discs, when they get a call from Wild Kratts kid Manuel who lives in the Sonoran Desert. He says he has spotted an ocelot in his backyard." },
+    { season: 17, episode: 3, title: "Deer Buckaroo", description: "The Wild Kratts team searches for a fawn -Buckaroo -that they helped a few years ago to find out how he's doing now." },
+    { season: 17, episode: 4, title: "Wolf Hawks", description: "While hiking in the Sonoran Desert, Martin comes across a \"wolf hawk.\" He rushes back to the Tortuga to tell everybody the news, only to have Chris say there is no such thing!" },
+    
+    { season: 18, episode: 1, title: "The Real Ant Farm", description: "While Koki and Jimmy work on the family farm of Wild Kratt kid Scarlett, Aviva, Martin and Chris go on an adventure in the amazon rainforest where they discover a hidden community of farmers - Leafcutter Ants!" },
+    { season: 18, episode: 2, title: "Hammerheads", description: "Aviva and Chris are doing inventory of the Creature Power Discs on the deck of the Tortuga when Martin spots a hammerhead shark and knocks all the discs into the ocean." },
+    { season: 18, episode: 3, title: "Mystery of the Mini Monkey Models", description: "The Wild Kratts team splits up across the amazon in search of a strange group of mini monkeys to figure out why they have such elaborate hairstyles and colors." },
+    { season: 18, episode: 4, title: "The Vanishing Stingray", description: "A bored Martin and Chris want to play a game of Creature Hide and Seek and secretly ask Aviva's help to program a new creature power disc to use." },
+    
+    { season: 19, episode: 1, title: "Iron Wolverine", description: "Chris sets up a massive cross-country race in the North. Each Wild Kratts team member must set off across the tundra!" },
+    { season: 19, episode: 2, title: "The Great Froggyback Ride", description: "The Wild Kratts are creature adventuring in the amazon when they're accidentally miniaturized! When a mischievous monkey makes off with the Miniaturizer, the team must rely on the creature powers of the poison frog to rescue it!" },
+    { season: 19, episode: 3, title: "Parrot Power", description: "While flying over the Amazon rainforest, the gang share a bowl of colorful jelly beans. Martin tells them that the jelly beans remind him of parrots." },
+    { season: 19, episode: 4, title: "In Search of the Easter Bunny", description: "The Wild Kratts are coloring eggs for Easter when the brothers want to find the real Easter bunny!" },
+    
+    { season: 20, episode: 1, title: "Adapto the Coyote", description: "When a coyote pup sneaks into the Tortuga, the Wild Kratts want to learn why this creature is so adaptable." },
+    { season: 20, episode: 2, title: "Tardigrade Xtreme", description: "The gang wonders if there is life on other planets, so the Kratt Brothers head to outer space to look for clues." },
+    { season: 20, episode: 3, title: "Uh-Oh Ostrich", description: "While cruising across the African savanna in the Tortuga, a gust of wind blows a piece of paper out of Aviva's hand and into an ostrich nest." },
+    { season: 20, episode: 4, title: "The Great Creature Tail Fail", description: "When a stowaway red squirrel accidentally gets loose on the African savanna, the guys activate Cheetah Powers to catch her." },
+    
+    { season: 21, episode: 1, title: "Outfoxed", description: "While playing with acorns in his Squirrel Creature Power Suit, Chris gets caught and carried off by a red fox." },
+    { season: 21, episode: 2, title: "Clever the Raven", description: "The Tortuga is parked in the Great North and some strange noises have Koki thinking it's time for a diagnostic overhaul." },
+    { season: 21, episode: 3, title: "Race to Goat Mountain", description: "Chris and Martin, off to explore mountain bio-zones of Goat Mountain, bump into Paisley Paver, who reveals her hideous plans for a development dubbed \"Asphalt Ascent.\"" },
+    { season: 21, episode: 4, title: "Owl Odyssey", description: "When the Wild Kratts get marooned and lost a world away from the Tortuga, they must embark on a long journey home." },
+    
+    { season: 22, episode: 1, title: "No Name Dream", description: "Martin has a dream that he's forgotten to name some baby animals and awakens in a sweat." },
+    { season: 22, episode: 2, title: "Backpack the Camel", description: "The gang goes on an expedition to the Gobi Desert to discover the last remaining wild camels in the world." },
+    { season: 22, episode: 3, title: "Fish out of Water", description: "After a mishap involving lost Creature Power Discs, the bros become marooned in the world of the mudskipper, a fish that can walk on land." },
+    
+    { season: 23, episode: 1, title: "Salamander Streaming", description: "Mysteriously, the Tortuga shorts and powers down while the gang is streaming a movie. Chris and Martin announce they can still do streaming - salamander streaming!" },
+    { season: 23, episode: 2, title: "Bumblezzzz", description: "While on a \"mini\" creature adventure, Martin and Chris encounter a hungry salamander and need to escape." },
+    { season: 23, episode: 3, title: "Chimpanzee and Me", description: "The gang travels deep into Uganda's tropical forests to uncover the true nature of the chimpanzee, but Chris sprains his ankle at the most inopportune time and can't participate." },
+    
+    { season: 24, episode: 1, title: "Mini Heroes & Mighty Mouths", description: "When the bros go on a mission in their Amphipod to understand the foundation of life in the ocean, they get swept up in the planktonic lifestyle." },
+    { season: 24, episode: 2, title: "Moose Nibbles", description: "The Kratt Bros decide to take a day off from adventuring by going camping! While setting up their tents, they meet a mischievous little moose calf who Martin names, Nibbles." },
+    
+    // China Adventure Special Episodes
+    { season: "China 1", episode: 1, title: "Panda Power Up!", description: "While checking out the endangered Giant panda, the Wild Kratts gets stranded in the bamboo forests of China without power to any of their vehicles or equipment." },
+    { season: "China 1", episode: 2, title: "Pangolin Rescue", description: "After discovering a pangolin and its amazingly unique keratin scales, the Wild Kratts receive an alert from two Wild Kratt kids in China. The pangolins in their forest are in trouble!" },
+    { season: "China 1", episode: 3, title: "Golden Snub Nosed Monkey Man", description: "The Wild Kratts go on an expedition into the Chinese mountains to find the amazing Snub nosed monkeys, a species of cold-adapted monkeys living in the snowy highlands." },
+    { season: "China 1", episode: 4, title: "Red Panda Rescue", description: "Chris finds a little lost Red panda, but before she can be reunited with her mother, Zach steals her as a Birthday present for Donita Donata." },
+    { season: "China 1", episode: 5, title: "The Colors of China", description: "While hanging out with Golden pheasants in China, Martin and Chris wonder how important color is for creatures." },
+    
+    // YouTube Only Episodes
+    { season: "Special", episode: 1, title: "Mystery of the Flamingo's Pink", description: "When Aviva makes a Flamingo Creature Power Suit, the color doesn't work. The suits are completely white, and the gang can't figure out why. All of the DNA is correct. There's nothing wrong. So where does the flamingo's pink come from? The gang is on a quest to solve the Mystery of the Flamingo's Pink.", youtubeUrl: "https://youtu.be/n0CcNL1G4qE" }
+  ];
+
+  const filteredEpisodes = useMemo(() => {
+    if (!searchTerm.trim()) return [];
+    
+    const searchLower = searchTerm.toLowerCase();
+    return episodes.filter(ep => 
+      ep.title.toLowerCase().includes(searchLower) || 
+      ep.description.toLowerCase().includes(searchLower)
+    ).slice(0, 20); // Limit to 20 results
+  }, [searchTerm]);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <h1 className="text-3xl font-bold text-green-700 mb-2">Wild Kratts Episode Finder</h1>
+          <p className="text-gray-600 mb-4">Search by animal, character, or description</p>
+          
+          <div className="relative">
+            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder='Try "elephant and rhino"...'
+              className="w-full pl-10 pr-4 py-3 border-2 border-green-300 rounded-lg focus:border-green-500 focus:outline-none text-lg"
+              autoFocus
+            />
+          </div>
+        </div>
+
+        {searchTerm && (
+          <div className="space-y-3">
+            {filteredEpisodes.length === 0 ? (
+              <div className="bg-white rounded-lg shadow p-6 text-center text-gray-500">
+                No episodes found. Try different keywords!
+              </div>
+            ) : (
+              <>
+                <div className="text-sm text-gray-600 mb-2 px-2">
+                  Found {filteredEpisodes.length} episode{filteredEpisodes.length !== 1 ? 's' : ''}
+                </div>
+                {filteredEpisodes.map((ep, idx) => (
+                  <div key={idx} className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-green-600 text-white px-3 py-2 rounded-lg font-bold text-sm flex-shrink-0">
+                        S{ep.season}<br/>E{ep.episode}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg text-gray-800 mb-1">{ep.title}</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed mb-2">{ep.description}</p>
+                        {ep.youtubeUrl ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded">Not on Prime</span>
+                            <a 
+                              href={ep.youtubeUrl} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-xs bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-colors"
+                            >
+                              ▶ Watch on YouTube
+                            </a>
+                          </div>
+                        ) : (
+                          <a 
+                            href="https://www.amazon.com/Wild-Kratts-Season/dp/B07V4792LM" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-block text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
+                          >
+                            Watch on Prime Video →
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
+
+        {!searchTerm && (
+          <div className="bg-white rounded-lg shadow-md p-6 text-center">
+            <p className="text-gray-500 mb-4">Start typing to search through all Wild Kratts episodes!</p>
+            <div className="text-sm text-gray-400">
+              <p>✨ Matches Prime Video season/episode numbers</p>
+              <p>🔍 Search by animal names, characters, or keywords</p>
+              <p>📱 Works great on phones and tablets</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default WildKrattsEpisodeFinder;
