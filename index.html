@@ -214,12 +214,14 @@
       ];
 
       const filteredEpisodes = useMemo(() => {
-        if (!searchTerm.trim()) return [];
-        
-        const searchLower = searchTerm.toLowerCase();
-        return episodes.filter(ep => 
-          ep.title.toLowerCase().includes(searchLower) || 
-          ep.description.toLowerCase().includes(searchLower)
+        const trimmed = searchTerm.trim();
+        if (!trimmed) return [];
+
+        const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const pattern = new RegExp(`\\b${escaped}\\b`, 'i');
+        return episodes.filter(ep =>
+          pattern.test(ep.title) ||
+          pattern.test(ep.description)
         ).slice(0, 20);
       }, [searchTerm]);
 
